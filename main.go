@@ -43,8 +43,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("wrong IMAGE_NUMBER: %s", err)
 	}
-
-	n := r.Intn(10)
 	for i := 0; i < n; i++ {
 		generateImg()
 	}
