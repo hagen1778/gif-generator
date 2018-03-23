@@ -13,6 +13,7 @@ import (
 	"math/rand"
 	"os"
 	"time"
+	"strconv"
 )
 
 var (
@@ -31,6 +32,16 @@ func main() {
 	imgDir, ok = os.LookupEnv("IMAGE_DIR")
 	if !ok {
 		log.Fatalf("Set `IMAGE_DIR` variable")
+	}
+
+	num, ok := os.LookupEnv("IMAGE_NUMBER")
+	if !ok {
+		num = "10"
+	}
+
+	n, err := strconv.Atoi(num)
+	if err != nil {
+		log.Fatalf("wrong IMAGE_NUMBER: %s", err)
 	}
 
 	n := r.Intn(10)
