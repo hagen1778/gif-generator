@@ -14,18 +14,11 @@ import (
 	"os"
 	"time"
 	"strconv"
+	"os/signal"
+	"syscall"
 )
 
-var (
-	w, h       float64 = 500, 250
-	palette            = color.Palette{}
-	zCycle     float64 = 8
-	zMin, zMax float64 = 1, 15
-
-	r = rand.New(rand.NewSource(time.Now().UnixNano()))
-
-	imgDir string
-)
+var imgDir string
 
 func main() {
 	var ok bool
@@ -36,17 +29,51 @@ func main() {
 
 	num, ok := os.LookupEnv("IMAGE_NUMBER")
 	if !ok {
-		num = "10"
+		num = "50"
 	}
 
 	n, err := strconv.Atoi(num)
 	if err != nil {
 		log.Fatalf("wrong IMAGE_NUMBER: %s", err)
 	}
+
+	log.Println("Init gif-generator with params")
+	log.Println("IMAGE_DIR", imgDir)
+	log.Println("IMAGE_NUMBER", n)
+
+	c := make(chan os.Signal)
+	signal.Notify(c, syscall.SIGHUP)
+	shutdown := make(chan struct{})
+	go func() {
+		for {
+			switch <-c {
+			case syscall.SIGHUP:
+				log.Println("SIGHUP recevied. Going to shutdown gracefully...")
+				close(shutdown)
+
+			}
+		}
+	}()
+
 	for i := 0; i < n; i++ {
-		generateImg()
+		select {
+		case <-shutdown:
+			log.Println("shutting down")
+			return
+		default:
+			generateImg()
+		}
 	}
 }
+
+var (
+	w, h       float64 = 500, 250
+	palette            = color.Palette{}
+	zCycle     float64 = 8
+	zMin, zMax float64 = 1, 15
+
+	r = rand.New(rand.NewSource(time.Now().UnixNano()))
+)
 
 func generateImg() {
 	numberOfStars := 500 + r.Intn(4000)
