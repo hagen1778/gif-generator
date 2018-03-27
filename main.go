@@ -12,10 +12,10 @@ import (
 	"math"
 	"math/rand"
 	"os"
-	"time"
-	"strconv"
 	"os/signal"
+	"strconv"
 	"syscall"
+	"time"
 )
 
 var imgDir string
