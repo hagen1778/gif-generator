@@ -42,15 +42,15 @@ func main() {
 	log.Println("IMAGE_NUMBER", n)
 
 	c := make(chan os.Signal)
-	signal.Notify(c, syscall.SIGHUP)
+	signal.Notify(c, syscall.SIGTERM)
 	shutdown := make(chan struct{})
 	go func() {
 		for {
 			switch <-c {
-			case syscall.SIGHUP:
-				log.Println("SIGHUP recevied. Going to shutdown gracefully...")
+			case syscall.SIGTERM:
+				log.Println("SIGTERM recevied. Going to shutdown gracefully...")
+				time.Sleep(time.Second*5)
 				close(shutdown)
-
 			}
 		}
 	}()

@@ -7,4 +7,4 @@ Configure with environment variables:
 * IMAGE_NUMBER - amount of GIFs to generate. Default: 50
 
 ## Manage
-Send `SIGHUP` to shutdown generator
+Send `SIGTERM` to shutdown generator
