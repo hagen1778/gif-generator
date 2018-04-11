@@ -27,6 +27,11 @@ func main() {
 		log.Fatalf("Set `IMAGE_DIR` variable")
 	}
 
+	collectionDir, ok := os.LookupEnv("COLLECTION_DIR")
+	if !ok {
+		log.Fatalf("Set `COLLECTION_DIR` variable")
+	}
+
 	num, ok := os.LookupEnv("IMAGE_NUMBER")
 	if !ok {
 		num = "50"
@@ -39,7 +44,10 @@ func main() {
 
 	log.Println("Init gif-generator with params")
 	log.Println("IMAGE_DIR", imgDir)
+	log.Println("COLLECTION_DIR", collectionDir)
 	log.Println("IMAGE_NUMBER", n)
+
+	list(collectionDir)
 
 	c := make(chan os.Signal)
 	signal.Notify(c, syscall.SIGTERM)
@@ -63,6 +71,17 @@ func main() {
 		default:
 			generateImg()
 		}
+	}
+}
+
+func list(dir string) {
+	files, err := ioutil.ReadDir(dir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, f := range files {
+		log.Println(f.Name())
 	}
 }
 
