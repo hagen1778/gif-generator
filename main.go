@@ -22,19 +22,14 @@ var imgDir string
 
 func main() {
 	var ok bool
-	imgDir, ok = os.LookupEnv("IMAGE_DIR")
+	imgDir, ok = os.LookupEnv("PATH_RESULT")
 	if !ok {
-		log.Fatalf("Set `IMAGE_DIR` variable")
+		log.Fatalf("Set `PATH_RESULT` variable")
 	}
 
 	dataset, ok := os.LookupEnv("PATH_DATASET")
 	if !ok {
 		log.Fatalf("Set `PATH_DATASET` variable")
-	}
-
-	model, ok := os.LookupEnv("PATH_MODEL")
-	if !ok {
-		log.Fatalf("Set `PATH_MODEL` variable")
 	}
 
 	num, ok := os.LookupEnv("IMAGE_NUMBER")
@@ -48,15 +43,11 @@ func main() {
 	}
 
 	log.Println("Init gif-generator with params")
-	log.Println("IMAGE_DIR", imgDir)
+	log.Println("PATH_RESULT", imgDir)
 	log.Println("PATH_DATASET", dataset)
 	log.Println("IMAGE_NUMBER", n)
 
 	list(dataset)
-
-	if _, err := os.Stat(model); err != nil {
-		log.Fatalf(err.Error())
-	}
 
 	c := make(chan os.Signal)
 	signal.Notify(c, syscall.SIGTERM)
